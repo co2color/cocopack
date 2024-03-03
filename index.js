@@ -27,5 +27,27 @@ function getEntryFilePath() {
   let entryPath = join(fileURLToPath(import.meta.url), entryPathName)
   return entryPath
 }
-createModuleObject('')
-getEntryFilePath()
+
+
+function getModules(entry) {
+  const rootModule = createModuleObject(entry)
+  const modules = [rootModule]
+
+  // Iterate over the modules, even when new 
+  // ones are being added
+  for (const module of modules) {
+    module.map = {} // Where we will keep the module maps
+
+    module.requires.forEach(dependency => {
+      const basedir = path.dirname(module.filepath)
+      const dependencyPath = resolve(dependency, { basedir })
+
+      const dependencyObject = createModuleObject(dependencyPath)
+
+      module.map[dependency] = dependencyObject.id
+      modules.push(dependencyObject)
+    })
+  }
+
+  return modules
+}
