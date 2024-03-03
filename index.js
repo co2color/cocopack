@@ -10,8 +10,6 @@ const config = {
 }
 
 function getEntryFilePath() {
-  // let entryPathName = config.entry ? config.entry : 'index.js'
-  // let entryPath = join(__dirname, entryPathName)
   let entryPathName = config.entry ? config.entry : 'index.js'
   let entryPath = join(fileURLToPath(import.meta.url), entryPathName)
   return entryPath
