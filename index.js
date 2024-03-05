@@ -75,4 +75,10 @@ function pack(modules) {
   })({ ${modulesSource} })`
 }
 
-pack(getModules(getEntryFilePath()))
+function getOutputFilePath(){
+  let outputPathName = config.output? config.output: 'bundle.js';
+  let outputPath = path.join(__dirname,'./dist',outputPathName);
+  return outputPath;
+}
+
+const strCode = pack(getModules(getEntryFilePath()))
