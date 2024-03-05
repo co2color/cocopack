@@ -49,6 +49,30 @@ function getModules(entry) {
   return modules
 }
 
-function pack(modules) {}
+function pack(modules) {
+  const modulesSource = modules.map(module => 
+    `${module.id}: {
+      factory: (module, require) => {
+        ${module.source}
+      },
+      map: ${JSON.stringify(module.map)}
+    }`
+  ).join();
+
+
+  return `(modules => {
+    const require = id => {
+      const { factory, map } = modules[id]
+      const localRequire = name => require(map[name])
+      const module = { exports: {} }
+
+      factory(module, localRequire)
+
+      return module.exports
+    }
+
+    require(0)
+  })({ ${modulesSource} })`
+}
 
 pack(getModules(getEntryFilePath()))
