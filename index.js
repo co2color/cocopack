@@ -49,6 +49,6 @@ function getModules(entry) {
   return modules
 }
 
-function pack() {}
+function pack(modules) {}
 
 pack(getModules(getEntryFilePath()))
