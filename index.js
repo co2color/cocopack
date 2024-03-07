@@ -3,6 +3,7 @@ const path = require('node:path')
 const resolve = require('resolve').sync
 const detective = require('detective')
 
+
 const config = {
   entry: './src/test.js',
   output: 'bundle.js',
@@ -42,14 +43,14 @@ function getModules(entry) {
 }
 
 function pack(modules) {
-  const modulesSource = modules.map(module => 
+  const modulesSource = modules.map(module =>
     `${module.id}: {
       factory: (module, require) => {
         ${module.source}
       },
       map: ${JSON.stringify(module.map)}
-    }`
-  ).join();
+    }`,
+  ).join()
 
 
   return `(modules => {
@@ -68,26 +69,26 @@ function pack(modules) {
 }
 
 
-function getEntryFilePath(){
-    let entryPathName = config.entry? config.entry: 'index.js';
-    let entryPath = path.join(__dirname,entryPathName);
-    return entryPath;
+function getEntryFilePath() {
+  let entryPathName = config.entry ? config.entry : 'index.js'
+  let entryPath = path.join(__dirname, entryPathName)
+  return entryPath
 }
 
-function getOutputFilePath(){
-  let outputPathName = config.output? config.output: 'bundle.js';
-  let outputPath = path.join(__dirname,'./dist',outputPathName);
-  return outputPath;
+function getOutputFilePath() {
+  let outputPathName = config.output ? config.output : 'bundle.js'
+  let outputPath = path.join(__dirname, './dist', outputPathName)
+  return outputPath
 }
 
-function output(data){
-    if(!fs.existsSync('./dist')){
-      fs.mkdirSync('./dist');
-    }
-    fs.writeFileSync(getOutputFilePath(),data,{"flag":"w+"});
+function output(data) {
+  if (!fs.existsSync('./dist')) {
+    fs.mkdirSync('./dist')
+  }
+  fs.writeFileSync(getOutputFilePath(), data, { 'flag': 'w+' })
 }
 
-(function start(){
-  let outputSource = pack(getModules(getEntryFilePath()));
-  output(outputSource);
+(function start() {
+  let outputSource = pack(getModules(getEntryFilePath()))
+  output(outputSource)
 })()
