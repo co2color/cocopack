@@ -1,7 +1,7 @@
 {
   "name": "cocopack",
   "version": "1.0.0",
-  "description": "learn hwo to build",
+  "description": "learn how to build",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,6 +14,7 @@
     "resolve": "^1.22.8"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^2.6.4",
     "@types/node": "^20.11.19",
     "eslint": "^8.57.0"
   }
