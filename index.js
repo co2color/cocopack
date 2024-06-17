@@ -3,16 +3,15 @@ const path = require('node:path')
 const resolve = require('resolve').sync
 const detective = require('detective')
 
-
 const config = {
   entry: './src/test.js',
   output: 'bundle.js',
 }
 let ID = 0
 function createModuleObject(filepath) {
-  //获取文件的 源码
+  // 获取文件的 源码
   const source = fs.readFileSync(filepath, 'utf-8')
-  //通过 detective 这个库 生成文件依赖 AST 
+  // 通过 detective 这个库 生成文件依赖 AST
   const requires = detective(source)
   const id = ID++
 
@@ -23,12 +22,12 @@ function getModules(entry) {
   const rootModule = createModuleObject(entry)
   const modules = [rootModule]
 
-  // Iterate over the modules, even when new 
+  // Iterate over the modules, even when new
   // ones are being added
   for (const module of modules) {
     module.map = {} // Where we will keep the module maps
 
-    module.requires.forEach(dependency => {
+    module.requires.forEach((dependency) => {
       const basedir = path.dirname(module.filepath)
       const dependencyPath = resolve(dependency, { basedir })
 
@@ -52,7 +51,6 @@ function pack(modules) {
     }`,
   ).join()
 
-
   return `(modules => {
     const require = id => {
       const { factory, map } = modules[id]
@@ -68,27 +66,26 @@ function pack(modules) {
   })({ ${modulesSource} })`
 }
 
-
 function getEntryFilePath() {
-  let entryPathName = config.entry ? config.entry : 'index.js'
-  let entryPath = path.join(__dirname, entryPathName)
+  const entryPathName = config.entry ? config.entry : 'index.js'
+  const entryPath = path.join(__dirname, entryPathName)
   return entryPath
 }
 
 function getOutputFilePath() {
-  let outputPathName = config.output ? config.output : 'bundle.js'
-  let outputPath = path.join(__dirname, './dist', outputPathName)
+  const outputPathName = config.output ? config.output : 'bundle.js'
+  const outputPath = path.join(__dirname, './dist', outputPathName)
   return outputPath
 }
 
 function output(data) {
-  if (!fs.existsSync('./dist')) {
+  if (!fs.existsSync('./dist'))
     fs.mkdirSync('./dist')
-  }
-  fs.writeFileSync(getOutputFilePath(), data, { 'flag': 'w+' })
+
+  fs.writeFileSync(getOutputFilePath(), data, { flag: 'w+' })
 }
 
 (function start() {
-  let outputSource = pack(getModules(getEntryFilePath()))
+  const outputSource = pack(getModules(getEntryFilePath()))
   output(outputSource)
 })()
